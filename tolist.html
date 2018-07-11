@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./static/babel.min.js"></script>
+    <script src="./static/react.development.js"></script>
+    <script src="./static/react-dom.development.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul li {
+            list-style: none;
+        }
+
+        .top {
+            height: 100px;
+            background-color: cadetblue;
+        }
+
+        .top .top-wrap {
+            width: 600px;
+            margin: 0 auto;
+            line-height: 100px;
+        }
+
+        .top .top-wrap h1 {
+            float: left;
+            color: white;
+        }
+
+        .top .top-wrap input {
+            float: right;
+            margin-top: 34px;
+            height: 30px;
+            width: 300px;
+            border-radius: 5px;
+            padding-left: 4px;
+        }
+
+        .middle {
+            width: 600px;
+            margin: 30px auto;
+        }
+
+        .middle .middle-wrap {
+            overflow: hidden;
+        }
+
+        .middle .middle-wrap span:first-child {
+            font-size: 28px;
+            font-weight: 600;
+            float: left;
+        }
+
+        .middle .middle-wrap span:nth-child(2) {
+            float: right;
+            border-radius: 100%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            background-color: aliceblue;
+            margin-top: 6px;
+        }
+
+        .middle ul {
+            margin-top: 20px;
+        }
+
+        .middle ul li {
+            background-color: aliceblue;
+            height: 32px;
+            line-height: 32px;
+            padding-left: 10px;
+            border-radius: 3px;
+            border-left: 5px solid #629A9C;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+        .middle ul li button{
+            float: right;
+            margin-top: 8px;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            background-color:aliceblue;
+        }
+        .middle ul li input {
+            width: 22px;
+            height: 22px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script type="text/jsx">
+    class Top extends React.Component {
+        commit = (event) => {
+            if (event.keyCode == 13) {
+                let title = event.target.value
+                let arr = this.props.arr
+                arr.push(
+                    {
+                        title,
+                        isDone: false
+                    }
+                )
+                event.target.value = "";
+                this.props.func(arr)
+            }
+        }
+        render() {
+            return (
+                <div className="top">
+                    <div className="top-wrap">
+                        <h1>ToDoList</h1>
+                        <input type="text" placeholder="输入代办的事情" onKeyUp={this.commit}/></div>
+                </div>
+            )
+        }
+    }
+    class Middle extends React.Component {
+        handleChange=(event)=>{
+            let arr = this.props.arr;
+            arr[event.target.value].isDone = event.target.checked;
+            this.props.func(arr);
+        }
+        delete=(event)=>{
+            let arr = this.props.arr;
+            let index = event.target.value
+            arr.splice(index,1);
+            this.props.func(arr);
+        }
+        render() {
+            let ingThings = this.props.arr.filter(item => !item.isDone);
+            let arr = this.props.arr;
+            return (
+                <div className="middle">
+                    <div className="middle-wrap">
+                        <span>正在进行</span><span>{ingThings.length}</span>
+                    </div>
+                    <ul>
+                        {arr.map((item, index) => {
+                            if (!item.isDone) {
+                                return (
+                                        <li key={index}>
+                                            <input type="checkbox" value={index}
+                                                   onChange={this.handleChange}/>{item.title}
+                                            <button onClick={this.delete} value={index}>删除</button>
+                                        </li>
+                                )
+                            }
+                            else {
+                                return null
+                            }
+                        })}
+
+                    </ul>
+                </div>
+            )
+        }
+    }
+    class Bottom extends React.Component {
+        handleChange = (event) => {
+            let arr = this.props.arr;
+            arr[event.target.value].isDone = event.target.checked;
+            this.props.func(arr);
+        }
+        delete=(event)=>{
+            let arr = this.props.arr;
+            let index = event.target.value
+            arr.splice(index,1);
+            this.props.func(arr);
+        }
+        render() {
+            let doneThings = this.props.arr.filter(item => item.isDone)
+            return (
+                <div className="middle">
+                    <div className="middle-wrap">
+                        <span>已经进行</span><span>{doneThings.length}</span>
+                    </div>
+                    <ul>
+                        {
+                            this.props.arr.map((item,index) => {
+                                if (item.isDone) {
+                                    return (
+                                        <li key={index}>
+                                            <input type="checkbox" onChange={this.handleChange} value={index} checked={item.isDone} /> {item.title}
+                                            <button onClick={this.delete} value={index}>删除</button>
+                                        </li>
+                                    )
+                                }
+                                else {
+                                    return null
+                                }
+                            })
+                        }
+                    </ul>
+                </div>
+            )
+        }
+    }
+    class Layout extends React.Component {
+        constructor(props) {
+            super(props)
+            this.state = {
+                arr: [
+                    {
+                        title: "第一件事",
+                        isDone: false
+                    },
+                    {
+                        title: "第二件事",
+                        isDone: true
+                    }
+                ]
+            }
+        }
+
+        handleChangeArr = (newArr) => {
+            this.setState({
+                arr: newArr
+            })
+        }
+
+        render() {
+            return (
+                <div>
+                    <Top func={this.handleChangeArr} arr={this.state.arr}></Top>
+                    <Middle func={this.handleChangeArr} arr={this.state.arr}></Middle>
+                    <Bottom func={this.handleChangeArr} arr={this.state.arr}></Bottom>
+                </div>
+            )
+        }
+    }
+    ReactDOM.render(<Layout></Layout>, document.querySelector("#app"))
+</script>
+</html>

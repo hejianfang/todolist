@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./static/babel.min.js"></script>
+    <script src="./static/react.development.js"></script>
+    <script src="./static/react-dom.development.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        .area-wrap {
+            width: 502px;
+            overflow: hidden;
+        }
+        textarea {
+            display: block;
+            width: 500px;
+            min-height: 100px;
+        }
+        button {
+            margin-top: 20px;
+            float: right;
+        }
+        li {
+            width: 502px;
+            line-height: 50px;
+
+        }
+    </style>
+
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script type="text/jsx">
+  class Text extends React.Component{
+      handleClick =()=>{
+         let title = this.text.value
+          let arr = this.props.arr;
+          arr.push({title})
+          this.props.func(arr)
+          this.text.value = "";
+      }
+      render(){
+          return(
+              <div className="area-wrap">
+                  <textarea ref={text => this.text =text}></textarea>
+                  <button onClick={this.handleClick}>提交</button>
+              </div>
+          )
+      }
+  }
+  class List extends React.Component{
+      render(){
+          return(
+                <ul>
+                    {this.props.arr.map((item,index)=>(
+                        <li key={index}> {item.title}</li>
+                        ))}
+                </ul>
+          )
+      }
+  }
+  class Layout extends React.Component {
+      constructor(props) {
+          super(props)
+          this.state = {
+              arr: [
+                  {
+                      title: "我是第一条评论"
+                  }
+              ]
+          }
+      }
+      arrChange = (newArr) => {
+          this.setState({
+              arr: newArr
+          })
+      }
+      render() {
+          return(
+              <div>
+                  <Text func={this.arrChange} arr={this.state.arr}></Text>
+                  <List arr={this.state.arr}></List>
+              </div>
+          )
+      }
+  }
+
+  ReactDOM.render(<Layout></Layout>,document.querySelector('#app'))
+</script>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        .my-area {
+            font-size: 30px;
+            width: 500px;
+            margin-top: 50px;
+            border-radius: 4px;
+            min-height: 100px;
+            overflow: hidden;
+            transition: height ease-in-out .2s;
+            outline: none;
+            padding: 0 10px;
+        }
+    </style>
+</head>
+<body>
+<textarea class="my-area"></textarea>
+
+<script>
+    let area = document.querySelector(".my-area");
+
+    function setHeight() {
+        area.style.height = "auto";
+        area.style.height = area.scrollHeight+'px';
+    }
+
+    area.addEventListener("input",setHeight)
+    area.addEventListener("change",setHeight)
+    area.addEventListener("cut",setHeight)
+    area.addEventListener("copy",setHeight)
+
+
+</script>
+</body>
+</html>
